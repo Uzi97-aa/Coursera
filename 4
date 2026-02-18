@@ -1,0 +1,27 @@
+using NUnit.Framework;
+using System;
+
+[TestFixture]
+public class TestInputValidation
+{
+    [Test]
+    public void TestForSQLInjection()
+    {
+        string maliciousInput = "' OR 1=1 --";
+
+        Assert.Throws<ArgumentException>(() =>
+        {
+            InputSanitizer.SanitizeUsername(maliciousInput);
+        });
+    }
+
+    [Test]
+    public void TestForXSS()
+    {
+        string maliciousScript = "<script>alert('Hacked')</script>";
+
+        string encoded = InputSanitizer.EncodeForOutput(maliciousScript);
+
+        Assert.False(encoded.Contains("<script>"));
+    }
+}
