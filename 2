@@ -1,0 +1,46 @@
+using MySql.Data.MySqlClient;
+using System.Data;
+
+public class UserRepository
+{
+    private readonly string _connectionString;
+
+    public UserRepository(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+
+    public void InsertUser(string username, string email)
+    {
+        string query = "INSERT INTO Users (Username, Email) VALUES (@Username, @Email)";
+
+        using (var connection = new MySqlConnection(_connectionString))
+        using (var command = new MySqlCommand(query, connection))
+        {
+            command.Parameters.Add("@Username", MySqlDbType.VarChar).Value = username;
+            command.Parameters.Add("@Email", MySqlDbType.VarChar).Value = email;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+    }
+
+    public DataTable GetUserByUsername(string username)
+    {
+        string query = "SELECT * FROM Users WHERE Username = @Username";
+
+        using (var connection = new MySqlConnection(_connectionString))
+        using (var command = new MySqlCommand(query, connection))
+        {
+            command.Parameters.Add("@Username", MySqlDbType.VarChar).Value = username;
+
+            connection.Open();
+            using (var reader = command.ExecuteReader())
+            {
+                var table = new DataTable();
+                table.Load(reader);
+                return table;
+            }
+        }
+    }
+}
