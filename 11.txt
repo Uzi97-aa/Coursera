@@ -1,0 +1,5 @@
+[AuthorizeRole("Admin")]
+public IActionResult AdminDashboard()
+{
+    return View();
+}
