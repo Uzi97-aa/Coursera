@@ -1,0 +1,35 @@
+[Test]
+public void SQLInjection_Attempt_ShouldNotReturnUser()
+{
+    string maliciousInput = "' OR 1=1 --";
+
+    var user = _repository.GetUser(maliciousInput);
+
+    Assert.IsNull(user);
+}
+
+
+[Test]
+public void XSS_Attempt_ShouldBeEncoded()
+{
+    string maliciousScript = "<script>alert('Hacked')</script>";
+
+    string encoded = System.Net.WebUtility.HtmlEncode(maliciousScript);
+
+    Assert.False(encoded.Contains("<script>"));
+}
+
+
+
+[Test]
+public void StoredXSS_ShouldNotRenderExecutableScript()
+{
+    var user = new User
+    {
+        Username = "<script>alert(1)</script>"
+    };
+
+    string safeOutput = System.Net.WebUtility.HtmlEncode(user.Username);
+
+    Assert.IsFalse(safeOutput.Contains("<script>"));
+}
