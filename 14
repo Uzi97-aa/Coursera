@@ -1,0 +1,9 @@
+using System.Text.RegularExpressions;
+
+public static string ValidateUsername(string username)
+{
+    if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]{3,50}$"))
+        throw new ArgumentException("Invalid username.");
+
+    return username;
+}
