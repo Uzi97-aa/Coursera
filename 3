@@ -1,0 +1,8 @@
+public void Submit(string username, string email)
+{
+    username = InputSanitizer.SanitizeUsername(username);
+    email = InputSanitizer.SanitizeEmail(email);
+
+    var repository = new UserRepository("your_connection_string");
+    repository.InsertUser(username, email);
+}
